@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,6 +23,7 @@ import frc.robot.commands.MultistepAutoBuilder;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.subsystems.ShooterBaseSubsystem;
 import frc.robot.subsystems.ShooterMainSubsystem;
@@ -28,6 +31,8 @@ import frc.robot.subsystems.ShooterTestSubsystem;
 import frc.robot.commands.AutoShootBuilder;
 import frc.robot.commands.ShotRpmCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -48,7 +53,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = Constants.intakePresent ? new IntakeSubsystem() : null;
   private final NavigationSubsystem navigationSubsystem = new NavigationSubsystem();
   private final HopperSubsystem hopperSubsystem = Constants.hopperPresent ? new HopperSubsystem() : null;
-
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem();
   // Commands
   private final ActivateIntakeCommand activateIntakeCommand = Constants.intakePresent
       ? new ActivateIntakeCommand(intakeSubsystem, gamepad)
@@ -80,9 +85,10 @@ public class RobotContainer {
       intakeSubsystem.setDefaultCommand(activateIntakeCommand);
     }
     shooterSubsystem.setDefaultCommand(shotCommand);
+    
   }
-
-  /**
+ 
+   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -105,7 +111,21 @@ public class RobotContainer {
     //when RB is pressed, set rpm to a specific value, extend the indexer to touch the ball, wait, then turn off
     final JoystickButton autoShootButton = new JoystickButton(gamepad, Constants.RB);
     Command autoShootCommand = new AutoShootBuilder(shooterSubsystem, driveSubsystem, navigationSubsystem, Constants.manual, Constants.vision).build();
-    autoShootButton.whenPressed(autoShootCommand, true);
+    autoShootButton.whenPressed(new CommandBase() {
+      public void initialize() {
+        ledSubsystem.runTheRainbow(true);
+      }
+      public boolean isFinished() {
+        return true;
+      }
+    }.andThen(autoShootCommand).andThen(new CommandBase() {
+      public void initialize() {
+        ledSubsystem.runTheRainbow(false);
+      }
+      public boolean isFinished() {
+        return true;
+      }
+    }), true);
 
     if (Constants.intakePresent) {
       final JoystickButton deployButton = new JoystickButton(gamepad, Constants.A);

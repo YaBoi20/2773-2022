@@ -56,6 +56,10 @@ public class ConstantsForTestRobot {
     public static final int rightShooterEncoderPort = 6;
     public static final int leftShooterEncoderPort = 7;
 
+    // LED ports
+    public static final int led1Port = 8;
+    public static final int led2Port = 9;
+
     // PID values
     // ALL CURRENT VALUES ARE PLASEHOLDERS
     // DO NOT USE THESE CURRENT VALUES AND EXPECT IT TO WORK

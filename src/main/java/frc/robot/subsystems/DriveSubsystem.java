@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -14,20 +16,17 @@ import com.revrobotics.CANSparkMax;
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
 
-  private final CANSparkMax leftForMotor = new CANSparkMax(Constants.leftForWheelsCANID, Constants.motorType);
-  private final CANSparkMax rightForMotor = new CANSparkMax(Constants.rightForWheelsCANID, Constants.motorType);
-  private final CANSparkMax leftBackMotor = new CANSparkMax(Constants.leftBackWheelsCANID, Constants.motorType);
-  private final CANSparkMax rightBackMotor = new CANSparkMax(Constants.rightBackWheelsCANID, Constants.motorType);
-
+  private final Spark leftMotors = new Spark(3);
+  private final Spark rightMotors = new Spark(2);
+  
   // Speed controller groups
-  private final MotorControllerGroup leftMotors = new MotorControllerGroup(leftForMotor, leftBackMotor);
-  private final MotorControllerGroup rightMotors = new MotorControllerGroup(rightForMotor, rightBackMotor);
+  
 
   // Differential drive
   private final DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
   public DriveSubsystem() {
-    leftMotors.setInverted(true);
+    rightMotors.setInverted(true);
   }
 
   @Override

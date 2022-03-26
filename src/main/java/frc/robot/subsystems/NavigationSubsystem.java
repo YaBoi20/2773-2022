@@ -21,6 +21,7 @@ public class NavigationSubsystem extends SubsystemBase {
   private final Encoder leftEncoder = new Encoder(Constants.leftEncoderPortA, Constants.leftEncoderPortB);
   private final Encoder rightEncoder = new Encoder(Constants.rightEncoderPortA, Constants.rightEncoderPortB);
   private DifferentialDriveOdometry odometry;
+  
 
   public NavigationSubsystem() {
     leftEncoder.setDistancePerPulse(Constants.distancePerPulse);
